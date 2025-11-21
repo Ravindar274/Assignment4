@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Airbnb Listing</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 300px; padding: 5px; }
+    button { margin-top: 15px; padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Add New Airbnb Listing</h1>
+  <form action="/listings/new" method="POST">
+    <label>Title:</label>
+    <input type="text" name="title" required>
+
+    <label>Price:</label>
+    <input type="number" name="price" required>
+
+    <label>Location:</label>
+    <input type="text" name="location">
+
+    <label>Property Type:</label>
+    <input type="text" name="property_type">
+
+    <label>Description:</label>
+    <textarea name="description" rows="4"></textarea>
+
+    <label>Photos (comma-separated URLs):</label>
+    <input type="text" name="photos">
+
+    <button type="submit">Add Listing</button>
+  </form>
+  <a href="/listings">Back to Listings</a>
+</body>
+</html>

@@ -1,0 +1,94 @@
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header-actions input {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.header-actions button {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Table */
+.listings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.listings-table th,
+.listings-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.listings-table th {
+  background-color: #f2f2f2;
+}
+
+/* Buttons in actions column */
+.button-row {
+  display: flex;
+  gap: 5px;
+}
+
+.button-row button {
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Edit inputs */
+.edit-input {
+  width: 90%;
+  padding: 3px 5px;
+}
+
+/* Images in images column */
+.image-row img {
+  height: 50px;
+  width: 70px;
+  object-fit: cover;
+  margin-right: 5px;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+.image-row{
+display: flex;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.pagination a:hover {
+  background-color: #0056b3;
+}

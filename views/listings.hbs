@@ -1,0 +1,175 @@
+<link rel="stylesheet" href=".css/style.css">
+
+<div class="header-bar">
+  <h1>Airbnb Listings</h1>
+  <div class="header-actions">
+    <input type="text" id="search-input" placeholder="Search by ID">
+    <button id="search-btn">Search</button>
+    <button id="add-btn">Add</button>
+  </div>
+</div>
+
+<table class="listings-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Neighbourhood</th>
+      <th>Country</th>
+      <th>Room Type</th>
+      <th>Price</th>
+      <th>Service Fee</th>
+      <th>Host Name</th>
+      <th>Images</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="listings-body">
+    {{#each listings}}
+      <tr data-id="{{_id}}">
+        <td>{{id}}</td>
+        <td>
+          <span class="display">{{NAME}}</span>
+          <input class="edit-input" type="text" value="{{NAME}}" style="display:none">
+        </td>
+        <td>{{neighbourhood}}</td>
+        <td>{{country}}</td>
+        <td>{{lookup this 'room type'}}</td>
+        <td>
+          <span class="display">{{price}}</span>
+          <input class="edit-input" type="text" value="{{price}}" style="display:none">
+        </td>
+        <td>{{lookup this 'service fee'}}</td>
+        <td>{{lookup this 'host name'}}</td>
+        <td>
+          <div  class="image-row" >
+          {{#each images}}
+            <img src="{{this}}" alt="Image">
+          {{/each}}
+          </div>
+        </td>
+        <td class="button-row">
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<div class="pagination">
+  {{#if (gt currentPage 1)}}
+    <a href="/listings?page={{subtract currentPage 1}}">&laquo; Previous</a>
+  {{/if}}
+
+  <span>Page {{currentPage}} of {{totalPages}}</span>
+
+  {{#if (lt currentPage totalPages)}}
+    <a href="/listings?page={{add currentPage 1}}">Next &raquo;</a>
+  {{/if}}
+</div>
+
+<script>
+const listingsBody = document.getElementById("listings-body");
+
+// Search by ID
+document.getElementById("search-btn").addEventListener("click", () => {
+  const id = document.getElementById("search-input").value.trim();
+  if (!id) return window.location.href = "/listings";
+  window.location.href = `/listings/${id}`;
+});
+
+// Add new row
+document.getElementById("add-btn").addEventListener("click", () => {
+  if (document.querySelector(".new-row")) return;
+
+  const tr = document.createElement("tr");
+  tr.classList.add("new-row");
+  tr.innerHTML = `
+    <td><input type="text" class="new-id"></td>
+    <td><input type="text" class="new-NAME"></td>
+    <td><input type="text" class="new-neighbourhood"></td>
+    <td><input type="text" class="new-country"></td>
+    <td><input type="text" class="new-roomtype"></td>
+    <td><input type="text" class="new-price"></td>
+    <td><input type="text" class="new-servicefee"></td>
+    <td><input type="text" class="new-hostname"></td>
+    <td></td>
+    <td class="button-row">
+      <button class="save-new-btn">Save</button>
+      <button class="cancel-new-btn">Cancel</button>
+    </td>
+  `;
+  listingsBody.prepend(tr);
+
+  tr.querySelector(".cancel-new-btn").addEventListener("click", () => tr.remove());
+
+  tr.querySelector(".save-new-btn").addEventListener("click", async () => {
+    const newListing = {
+      id: tr.querySelector(".new-id").value,
+      NAME: tr.querySelector(".new-NAME").value,
+      neighbourhood: tr.querySelector(".new-neighbourhood").value,
+      country: tr.querySelector(".new-country").value,
+      "room type": tr.querySelector(".new-roomtype").value,
+      price: tr.querySelector(".new-price").value,
+      "service fee": tr.querySelector(".new-servicefee").value,
+      "host name": tr.querySelector(".new-hostname").value
+    };
+
+    const res = await fetch("/listings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newListing)
+    });
+
+    if (res.ok) window.location.href = "/listings";
+    else alert("Failed to add listing");
+  });
+});
+
+// Edit & Delete buttons
+document.querySelectorAll("#listings-body tr").forEach(tr => {
+  const editBtn = tr.querySelector(".edit-btn");
+  const deleteBtn = tr.querySelector(".delete-btn");
+
+  editBtn.addEventListener("click", async () => {
+    const nameInput = tr.querySelector("td:nth-child(2) .edit-input");
+    const priceInput = tr.querySelector("td:nth-child(6) .edit-input");
+    const nameSpan = tr.querySelector("td:nth-child(2) .display");
+    const priceSpan = tr.querySelector("td:nth-child(6) .display");
+
+    if (editBtn.textContent === "Edit") {
+      nameInput.style.display = "block";
+      priceInput.style.display = "block";
+      nameSpan.style.display = "none";
+      priceSpan.style.display = "none";
+      editBtn.textContent = "Save";
+      return;
+    }
+
+    const updatedData = {
+      NAME: nameInput.value,
+      price: priceInput.value
+    };
+
+    const id = tr.getAttribute("data-id");
+    const res = await fetch(`/listings/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData)
+    });
+
+    if (res.ok) window.location.href = "/listings";
+    else alert("Update failed");
+  });
+
+  deleteBtn.addEventListener("click", async () => {
+    const id = tr.getAttribute("data-id");
+    if (!confirm("Are you sure?")) return;
+
+    const res = await fetch(`/listings/${id}`, { method: "DELETE" });
+    if (res.ok) window.location.href = "/listings";
+    else alert("Delete failed");
+  });
+});
+</script>
