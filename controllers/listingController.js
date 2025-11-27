@@ -20,7 +20,8 @@ exports.getAll = async (req, res, next) => {
     const limit = 100;
     const skip = (page - 1) * limit;
 
-    const total = await Listing.countDocuments();
+    // const total = await Listing.countDocuments();
+    const total = 102600;
     const listings = await Listing.find().skip(skip).limit(limit).lean();
 
     res.render("listings", {
